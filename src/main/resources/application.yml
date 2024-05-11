@@ -2,9 +2,9 @@ spring:
   application:
     name: NetNest
   datasource:
-    url: jdbc:mysql://62.234.221.192:3306/blog?serverTimezone=UTC
-    username: fy
-    password: 0000Abc!
+    url: 
+    username: 
+    password: 
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:
