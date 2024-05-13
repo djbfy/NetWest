@@ -12,7 +12,8 @@ import com.qiqi.netnest.Service.HttpService;
 import com.qiqi.netnest.Service.WebNestService;
 import com.qiqi.netnest.Utils.DateUtil;
 import com.qiqi.netnest.Utils.StringUtil;
-import com.qiqi.netnest.Vo.Response.WebNestResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,8 @@ import java.util.List;
 
 @Service
 public class WebNestServiceImpl implements WebNestService {
+
+    private static final Logger logger = LoggerFactory.getLogger(WebNestServiceImpl.class);
 
     @Autowired
     private WebNestMapper webNestMapper;
@@ -72,11 +75,11 @@ public class WebNestServiceImpl implements WebNestService {
         webNest.setCreateTime(DateUtil.getNowDate());
         if (StrUtil.isEmpty(webNest.getFavicon()) || StrUtil.isBlank(webNest.getFavicon())) {
             WebDomain webDomain = httpService.httpInfo(webNest.getUrl());
-            if (webDomain == null) {
-                webNest.setUrl("../assets/favicon.ico");
+            if (webDomain == null||StrUtil.isBlank(webDomain.getFaviconUrl())) {
+                webNest.setFavicon("auto.png");
                 webNest.setGhm(1);
             } else {
-                webNest.setUrl(webDomain.getFaviconUrl());
+                webNest.setFavicon(webDomain.getFaviconUrl());
                 webNest.setGhm(0);
             }
         }
@@ -103,6 +106,7 @@ public class WebNestServiceImpl implements WebNestService {
         try {
             if (webNest.getGhm()==0){
                 WebDomain webDomain = httpService.httpInfo(webNest.getUrl());
+                logger.info("updateItem获取网站头像："+webDomain.getFaviconUrl());
                 webNest.setFavicon(webDomain.getFaviconUrl());
             }
             return webNestMapper.updateById(webNest);
