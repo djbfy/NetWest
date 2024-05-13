@@ -107,7 +107,11 @@ public class WebNestServiceImpl implements WebNestService {
             if (webNest.getGhm()==0){
                 WebDomain webDomain = httpService.httpInfo(webNest.getUrl());
                 logger.info("updateItem获取网站头像："+webDomain.getFaviconUrl());
-                webNest.setFavicon(webDomain.getFaviconUrl());
+                if (StrUtil.isNotEmpty(webDomain.getFaviconUrl())){
+                    webNest.setFavicon(webDomain.getFaviconUrl());
+                }else {
+                    webNest.setGhm(1);
+                }
             }
             return webNestMapper.updateById(webNest);
         } catch (Exception e) {

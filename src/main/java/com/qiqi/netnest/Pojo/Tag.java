@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("Tag")
+@TableName("tag")
 public class Tag {
     @TableId(value = "id",type = IdType.AUTO)
-    private int id;
+    private Integer id;
     private String Type;
 }

@@ -35,7 +35,7 @@ public class HttpServiceImpl implements HttpService {
             return null;
         }
         //匹配<link rel="*icon*" href="()"> ()内内容
-        String regexIcon = "<link\\s+[^>]*?rel=\"[^\"]*icon[^\"]*\"\\s+[^>]*?href=\"([^\"]+)\"[^>]*>";
+        String regexIcon = "<link\\s+[^>]*?rel=['\"]?[^'\">]*icon[^'\">]*['\"]?\\s+[^>]*?href=['\"]?([^'\"\\s>]+)['\"]?[^>]*?>";
         String regexTitle = "<title>(.*?)</title>";
         String regexDes = "<meta\\s+name=\"description\"\\s+content=\"([^\"]+)\">";
         String baseUrl = extractHtml(htmlContent, regexIcon);
@@ -66,6 +66,7 @@ public class HttpServiceImpl implements HttpService {
         if (matcher.find()) {
             return matcher.group(1);
         }
+        logger.warn("未匹配到目标标签->"+regex);
         return null;
     }
 }

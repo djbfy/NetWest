@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `webNest`
 
 CREATE TABLE IF NOT EXISTS `passwd`
 (
+    'id' int primary key  NOT NULL ,
     `role`     VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL
 ) ENGINE = InnoDB

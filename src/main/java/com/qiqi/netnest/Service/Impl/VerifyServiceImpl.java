@@ -28,7 +28,9 @@ public class VerifyServiceImpl implements VerifyService {
             return Result.error(ReturnCode.RC500.getCode(), "密码为空");
         }
         String password = PasswdUtil.generatePass(pass);
-        Passwd passwd = new Passwd("admin", password);
+        Passwd passwd = new Passwd();
+        passwd.setRole("admin");
+        passwd.setPassword(password);
         Passwd ps = passwdMapper.selectOne(new QueryWrapper<Passwd>().eq("role", "admin"));
         if (ps == null) {
             try {
