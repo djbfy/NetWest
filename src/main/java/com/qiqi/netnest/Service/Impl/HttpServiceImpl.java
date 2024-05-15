@@ -13,25 +13,29 @@ import org.springframework.web.client.RestTemplate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//todo 改用jsoup来操作html
 @Service
 public class HttpServiceImpl implements HttpService {
 
-    private static final Logger logger= LoggerFactory.getLogger(HttpServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpServiceImpl.class);
     @Autowired
     private RestTemplate restTemplate;
 
     @Override
     public WebDomain httpInfo(String url) {
+        String regexUrl = "(http[s]?:\\/\\/[^\\/]*)";
+        //获取主域名
+        String urls = extractHtml(url, regexUrl);
         String htmlContent = null;
         try {
-            htmlContent = restTemplate.getForObject(url, String.class);
+            htmlContent = restTemplate.getForObject(urls, String.class);
         } catch (RestClientException e) {
-            logger.error("获取{"+url+"}源码失败");
+            logger.error("获取{" + url + "}源码失败");
             logger.error(e.getMessage());
             return null;
         }
         if (StrUtil.isEmpty(htmlContent)) {
-            logger.error("获取{"+url+"}源码为空");
+            logger.error("获取{" + url + "}源码为空");
             return null;
         }
         //匹配<link rel="*icon*" href="()"> ()内内容
@@ -39,20 +43,15 @@ public class HttpServiceImpl implements HttpService {
         String regexTitle = "<title>(.*?)</title>";
         String regexDes = "<meta\\s+name=\"description\"\\s+content=\"([^\"]+)\">";
         String baseUrl = extractHtml(htmlContent, regexIcon);
-
-        if (StrUtil.isNotEmpty(baseUrl) && !baseUrl.startsWith("https")) {
+        //获取//前 http(s):
+        String preUrls = extractHtml(urls, "(http[s]?:)\\/\\/[^\\/]*");
+        if (StrUtil.isNotEmpty(baseUrl) && !baseUrl.startsWith("http")) {
             if (baseUrl.startsWith("//")) {
-                baseUrl = "https:" + baseUrl;
+                baseUrl = preUrls + baseUrl;
             } else if (!baseUrl.startsWith("/")) {
-                if (!url.endsWith("/")) {
-                    url += "/";
-                }
-                baseUrl = url + baseUrl;
+                baseUrl = urls +"/"+ baseUrl;
             } else {
-                if (url.endsWith("/")) {
-                    url = url.substring(0, url.length() - 1);
-                }
-                baseUrl = url + baseUrl;
+                baseUrl = urls + baseUrl;
             }
         }
         String baseTitle = extractHtml(htmlContent, regexTitle);
@@ -66,7 +65,7 @@ public class HttpServiceImpl implements HttpService {
         if (matcher.find()) {
             return matcher.group(1);
         }
-        logger.warn("未匹配到目标标签->"+regex);
+        logger.warn("未匹配到目标标签->" + regex);
         return null;
     }
 }
