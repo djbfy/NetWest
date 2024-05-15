@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/user")
 public class VerifyController {
@@ -22,9 +24,9 @@ public class VerifyController {
     }
 
     @PostMapping("/verify")
-    public Result<String> verify(@RequestBody String pass){
+    public Result<String> verify(@RequestBody String pass, HttpServletRequest request){
         String password  = new JSONObject(pass).getStr("pass");
-        return verifyService.verify(password);
+        return verifyService.verify(password,request);
     }
 
 }
