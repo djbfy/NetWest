@@ -14,6 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/tag/getTags")
                 .excludePathPatterns("/webNest/get**")
                 .excludePathPatterns("/html/**")
-                .excludePathPatterns("/user/**");
+                .excludePathPatterns("/user/**")
+                .excludePathPatterns("/image/**");
     }
 }
